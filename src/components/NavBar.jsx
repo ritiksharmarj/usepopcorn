@@ -1,6 +1,6 @@
 import Search from './Search';
 
-const NavBar = () => {
+const NavBar = ({ movies }) => {
   return (
     <nav className='nav-bar'>
       <div className='logo'>
@@ -11,7 +11,7 @@ const NavBar = () => {
       <Search />
 
       <p className='num-results'>
-        Found <strong>X</strong> results
+        Found <strong>{movies.length}</strong> results
       </p>
     </nav>
   );

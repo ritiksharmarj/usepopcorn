@@ -1,6 +1,7 @@
-## What I learn -
+## What I've learned -
 
-- Light/dark mode toggle
-- Live previews
-- Fullscreen mode
-- Cross platform
+- Split Into Components
+- Prop Drilling
+- Component Composition
+- Fixing Prop Drilling With Composition
+- Using Composition to Make Reusable Components
