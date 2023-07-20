@@ -5,3 +5,5 @@
 - Component Composition
 - Fixing Prop Drilling With Composition
 - Using Composition to Make Reusable Components
+- Props as a Component API
+- PropTypes
