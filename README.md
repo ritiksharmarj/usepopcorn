@@ -7,3 +7,6 @@
 - Using Composition to Make Reusable Components
 - Props as a Component API
 - PropTypes
+- Component Lifecycle
+- useEffect Hook
+- Handling Errors

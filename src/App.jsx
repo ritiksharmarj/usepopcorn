@@ -8,25 +8,40 @@ import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
 import Main from './components/Main';
 import Loader from './components/Loader';
+import ErrorMessage from './components/ErrorMessage';
 
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchMovies = async () => {
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
 
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${
-          import.meta.env.VITE_OMDB_API_KEY
-        }&s=batman`
-      );
-      const data = await res.json();
-      setMovies(data.Search);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${
+            import.meta.env.VITE_OMDB_API_KEY
+          }&s=batman`
+        );
 
-      setIsLoading(false);
+        // If there is no response
+        if (!res.ok)
+          throw new Error('Something went wrong with fetching movies!');
+
+        const data = await res.json();
+
+        // If there is no movie
+        if (data.Response === 'False') throw new Error('Movie not found!');
+
+        setMovies(data.Search);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchMovies();
   }, []);
@@ -36,7 +51,11 @@ export default function App() {
       <NavBar movies={movies} />
 
       <Main>
-        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+        <Box>
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
+        </Box>
 
         <Box>
           <WatchedSummary watched={watched} />
