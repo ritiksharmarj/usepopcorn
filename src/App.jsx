@@ -9,8 +9,10 @@ import WatchedMovieList from './components/WatchedMovieList';
 import Main from './components/Main';
 import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
+import Search from './components/Search';
 
 export default function App() {
+  const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,11 +22,12 @@ export default function App() {
     const fetchMovies = async () => {
       try {
         setIsLoading(true);
+        setError('');
 
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
-          }&s=batman`
+          }&s=${query}`
         );
 
         // If there is no response
@@ -43,12 +46,22 @@ export default function App() {
         setIsLoading(false);
       }
     };
+
+    // If there is no query or less then 3 letter to search movie, show temporary movie data
+    if (query.length < 3) {
+      setMovies(tempMovieData);
+      setError('');
+      return;
+    }
+
     fetchMovies();
-  }, []);
+  }, [query]);
 
   return (
     <>
-      <NavBar movies={movies} />
+      <NavBar movies={movies}>
+        <Search query={query} setQuery={setQuery} />
+      </NavBar>
 
       <Main>
         <Box>

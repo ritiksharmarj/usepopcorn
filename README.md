@@ -8,5 +8,5 @@
 - Props as a Component API
 - PropTypes
 - Component Lifecycle
-- useEffect Hook
+- useEffect Hook Lifecycle
 - Handling Errors
