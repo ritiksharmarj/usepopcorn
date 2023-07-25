@@ -15,7 +15,7 @@ import MovieDetails from './components/MovieDetails';
 export default function App() {
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedIMDBId, setSelectedIMDBId] = useState(null);
@@ -61,12 +61,19 @@ export default function App() {
 
   // Handle select movie to pass imdb id to "movie details component"
   const handleSelectMovie = (imdbID) => {
-    setSelectedIMDBId(imdbID === selectedIMDBId ? null : imdbID);
+    setSelectedIMDBId((selectedIMDBId) =>
+      imdbID === selectedIMDBId ? null : imdbID
+    );
   };
 
   // Handle close movie when user click on back button
   const handleCloseMovie = () => {
     setSelectedIMDBId(null);
+  };
+
+  // Handle watch movie list, when user click "add to list" in the movie detail
+  const handleAddWatched = (movie) => {
+    setWatched((watched) => [...watched, movie]);
   };
 
   return (
@@ -93,6 +100,7 @@ export default function App() {
             <MovieDetails
               selectedIMDBId={selectedIMDBId}
               onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
             />
           ) : (
             <>
