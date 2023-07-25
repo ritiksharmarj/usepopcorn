@@ -79,7 +79,11 @@ export default function App() {
         <Box>
           {isLoading && <Loader />}
           {!isLoading && !error && (
-            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+            <MovieList
+              movies={movies}
+              onSelectMovie={handleSelectMovie}
+              selectedIMDBId={selectedIMDBId}
+            />
           )}
           {error && <ErrorMessage message={error} />}
         </Box>
