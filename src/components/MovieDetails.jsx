@@ -78,6 +78,21 @@ const MovieDetails = ({
     onCloseMovie();
   };
 
+  // Press "escape" key to close movie details window
+  useEffect(() => {
+    const callback = (e) => {
+      if (e.code === 'Escape') {
+        onCloseMovie();
+      }
+    };
+
+    document.addEventListener('keydown', callback);
+
+    return () => {
+      document.removeEventListener('keydown', callback);
+    };
+  }, [onCloseMovie]);
+
   // Movie page title
   useEffect(() => {
     // If title is undefined or null

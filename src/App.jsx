@@ -63,6 +63,7 @@ export default function App() {
       return;
     }
 
+    handleCloseMovie(); // Close the movie details window before searching another movie
     fetchMovies();
 
     // Clean up function - abort controller
