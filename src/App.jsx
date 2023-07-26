@@ -31,7 +31,7 @@ export default function App() {
         setError('');
 
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${
+          `https://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
           }&s=${query}`,
           { signal: controller.signal }
