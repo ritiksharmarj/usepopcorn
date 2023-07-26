@@ -78,6 +78,19 @@ const MovieDetails = ({
     onCloseMovie();
   };
 
+  // Movie page title
+  useEffect(() => {
+    // If title is undefined or null
+    if (!title) return;
+
+    document.title = `${title}`;
+
+    // Cleanup function
+    return () => {
+      document.title = 'usePopcorn';
+    };
+  }, [title]);
+
   return (
     <div className='details'>
       {isLoading ? (

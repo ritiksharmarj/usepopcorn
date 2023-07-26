@@ -21,6 +21,10 @@ export default function App() {
   const [selectedIMDBId, setSelectedIMDBId] = useState(null);
 
   useEffect(() => {
+    // Cleaning up data fetching
+    const controller = new AbortController();
+
+    // Fetching movies data
     const fetchMovies = async () => {
       try {
         setIsLoading(true);
@@ -29,7 +33,8 @@ export default function App() {
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
-          }&s=${query}`
+          }&s=${query}`,
+          { signal: controller.signal }
         );
 
         // If there is no response
@@ -42,8 +47,10 @@ export default function App() {
         if (data.Response === 'False') throw new Error('Movie not found!');
 
         setMovies(data.Search);
+        setError('');
       } catch (error) {
-        setError(error.message);
+        // Set error if error is different from the "AbortError"
+        if (error.name !== 'AbortError') setError(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -57,6 +64,11 @@ export default function App() {
     }
 
     fetchMovies();
+
+    // Clean up function - abort controller
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   // Handle select movie to pass imdb id to "movie details component"

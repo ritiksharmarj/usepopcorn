@@ -9,4 +9,6 @@
 - PropTypes
 - Component Lifecycle
 - useEffect Hook Lifecycle
+- useEffect Cleanup Function
 - Handling Errors
+- Cleaning Up Data Fetching Using AbortController: abort() method
