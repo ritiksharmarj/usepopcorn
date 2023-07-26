@@ -2,9 +2,25 @@ import { useEffect, useState } from 'react';
 import StarRating from './StarRating';
 import Loader from './Loader';
 
-const MovieDetails = ({ selectedIMDBId, onCloseMovie, onAddWatched }) => {
+const MovieDetails = ({
+  selectedIMDBId,
+  onCloseMovie,
+  onAddWatched,
+  watched,
+}) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [userRating, setUserRating] = useState('');
+
+  // Boolean: check if "selectedIMDBId" is already present in the watched array or not
+  const isWatched = watched
+    .map((movie) => movie.imdbID)
+    .includes(selectedIMDBId);
+
+  // Get the "userRating" from the current selected movie detail if already rated
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedIMDBId
+  )?.userRating;
 
   // Destructure the movie details
   const {
@@ -53,6 +69,7 @@ const MovieDetails = ({ selectedIMDBId, onCloseMovie, onAddWatched }) => {
       poster,
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(' ').at(0)),
+      userRating,
     };
 
     onAddWatched(newWatchedMovie);
@@ -96,11 +113,28 @@ const MovieDetails = ({ selectedIMDBId, onCloseMovie, onAddWatched }) => {
 
           <section>
             <div className='rating'>
-              <StarRating maxRating={10} size={24} />
+              {/* If user already rated selected movie then show the "watchedUserRating" */}
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
 
-              <button className='btn-add' onClick={handleAddToWatchedList}>
-                Add to list
-              </button>
+                  {/* User rating should be greater than 0 to add movie in watched list */}
+                  {userRating > 0 && (
+                    <button
+                      className='btn-add'
+                      onClick={handleAddToWatchedList}
+                    >
+                      Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>You rated this movie {watchedUserRating} star.</p>
+              )}
             </div>
             <p>
               <em>{plot}</em>

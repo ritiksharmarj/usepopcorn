@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { tempMovieData, tempWatchedData } from './data';
+import { tempMovieData } from './data';
 
 import NavBar from './components/NavBar';
 import Box from './components/Box';
@@ -76,6 +76,11 @@ export default function App() {
     setWatched((watched) => [...watched, movie]);
   };
 
+  // Delete selected watched movie and update the watched
+  const handleDeleteWatched = (id) => {
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  };
+
   return (
     <>
       <NavBar movies={movies}>
@@ -101,11 +106,15 @@ export default function App() {
               selectedIMDBId={selectedIMDBId}
               onCloseMovie={handleCloseMovie}
               onAddWatched={handleAddWatched}
+              watched={watched}
             />
           ) : (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedMovieList watched={watched} />
+              <WatchedMovieList
+                watched={watched}
+                onDeleteWatched={handleDeleteWatched}
+              />
             </>
           )}
         </Box>
