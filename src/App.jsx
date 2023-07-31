@@ -15,10 +15,13 @@ import MovieDetails from './components/MovieDetails';
 export default function App() {
   const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedIMDBId, setSelectedIMDBId] = useState(null);
+  const [watched, setWatched] = useState(() => {
+    const storedWatchedList = localStorage.getItem('watched-movies');
+    return JSON.parse(storedWatchedList);
+  });
 
   useEffect(() => {
     // Cleaning up data fetching
@@ -84,7 +87,7 @@ export default function App() {
     setSelectedIMDBId(null);
   };
 
-  // Handle watch movie list, when user click "add to list" in the movie detail
+  // Handle watch movie list, when user click "add to list" button after rating in the movie detail
   const handleAddWatched = (movie) => {
     setWatched((watched) => [...watched, movie]);
   };
@@ -93,6 +96,11 @@ export default function App() {
   const handleDeleteWatched = (id) => {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   };
+
+  // Store watched movie list to local storage
+  useEffect(() => {
+    localStorage.setItem('watched-movies', JSON.stringify(watched));
+  }, [watched]);
 
   return (
     <>
