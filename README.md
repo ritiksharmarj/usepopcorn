@@ -13,3 +13,5 @@
 - Handling Errors
 - Cleaning Up Data Fetching Using AbortController: abort() method
 - Keypress Event
+- Local Storage
+- useRef Hook
