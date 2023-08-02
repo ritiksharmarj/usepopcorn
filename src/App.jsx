@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useMovies } from './hooks/useMovies';
+import { useState } from 'react';
+import { useFetchMovies } from './hooks/useFetchMovies';
+import { useLocalStorageState } from './hooks/useLocalStorageState';
 
 import NavBar from './components/NavBar';
 import Box from './components/Box';
@@ -15,15 +16,12 @@ import MovieDetails from './components/MovieDetails';
 export default function App() {
   const [query, setQuery] = useState('');
   const [selectedIMDBId, setSelectedIMDBId] = useState(null);
-  const [watched, setWatched] = useState(() => {
-    const storedWatchedList = localStorage.getItem('watched-movies');
 
-    if (storedWatchedList) return JSON.parse(storedWatchedList);
-    else return [];
-  });
+  // Custom hook to store watched movies data
+  const [watched, setWatched] = useLocalStorageState([], 'watched-movies');
 
   // Custom hook to fetch movies data
-  const { movies, isLoading, error } = useMovies(query);
+  const { movies, isLoading, error } = useFetchMovies(query);
 
   // Handle select movie to pass imdb id to "movie details component"
   const handleSelectMovie = (imdbID) => {
@@ -46,11 +44,6 @@ export default function App() {
   const handleDeleteWatched = (id) => {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   };
-
-  // Store watched movie list to local storage
-  useEffect(() => {
-    localStorage.setItem('watched-movies', JSON.stringify(watched));
-  }, [watched]);
 
   return (
     <>

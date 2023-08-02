@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { tempMovieData } from '../data';
 
-export const useMovies = (query) => {
+export const useFetchMovies = (query) => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');

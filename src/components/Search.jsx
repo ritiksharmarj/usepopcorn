@@ -1,26 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useKeyPress } from '../hooks/useKeyPress';
 
 const Search = ({ query, setQuery }) => {
   const searchInputEl = useRef(null); // const searchInputEl = { current: null }
 
-  useEffect(() => {
-    const callback = (e) => {
-      // If the focused element is equal to the selected element
-      if (document.activeElement === searchInputEl.current) return;
+  // Custom Hook - Select search input element on "enter" key press
+  useKeyPress('Enter', function () {
+    // If the focused element (search input) is equal to the selected element return nothing
+    if (document.activeElement === searchInputEl.current) return;
 
-      // Select search input element on "enter" key press
-      if (e.code === 'Enter') {
-        searchInputEl.current.focus();
-        setQuery('');
-      }
-    };
-
-    document.addEventListener('keydown', callback);
-
-    return () => {
-      document.removeEventListener('keydown', callback);
-    };
-  }, [setQuery]);
+    // else
+    searchInputEl.current.focus();
+    setQuery('');
+  });
 
   return (
     <input

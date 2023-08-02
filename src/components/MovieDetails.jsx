@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import StarRating from './StarRating';
 import Loader from './Loader';
+import { useKeyPress } from '../hooks/useKeyPress';
 
 const MovieDetails = ({
   selectedIMDBId,
@@ -78,33 +79,8 @@ const MovieDetails = ({
     onCloseMovie();
   };
 
-  // Press "escape" key to close movie details window
-  useEffect(() => {
-    const callback = (e) => {
-      if (e.code === 'Escape') {
-        onCloseMovie();
-      }
-    };
-
-    document.addEventListener('keydown', callback);
-
-    return () => {
-      document.removeEventListener('keydown', callback);
-    };
-  }, [onCloseMovie]);
-
-  // Movie page title
-  useEffect(() => {
-    // If title is undefined or null
-    if (!title) return;
-
-    document.title = `${title}`;
-
-    // Cleanup function
-    return () => {
-      document.title = 'usePopcorn';
-    };
-  }, [title]);
+  // Custom Hook - Press "escape" key to close movie details window
+  useKeyPress('Escape', onCloseMovie);
 
   return (
     <div className='details'>
