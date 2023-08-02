@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { tempMovieData } from './data';
+import { useMovies } from './hooks/useMovies';
 
 import NavBar from './components/NavBar';
 import Box from './components/Box';
@@ -14,66 +14,16 @@ import MovieDetails from './components/MovieDetails';
 
 export default function App() {
   const [query, setQuery] = useState('');
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const [selectedIMDBId, setSelectedIMDBId] = useState(null);
   const [watched, setWatched] = useState(() => {
     const storedWatchedList = localStorage.getItem('watched-movies');
-    return JSON.parse(storedWatchedList);
+
+    if (storedWatchedList) return JSON.parse(storedWatchedList);
+    else return [];
   });
 
-  useEffect(() => {
-    // Cleaning up data fetching
-    const controller = new AbortController();
-
-    // Fetching movies data
-    const fetchMovies = async () => {
-      try {
-        setIsLoading(true);
-        setError('');
-
-        const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${
-            import.meta.env.VITE_OMDB_API_KEY
-          }&s=${query}`,
-          { signal: controller.signal }
-        );
-
-        // If there is no response
-        if (!res.ok)
-          throw new Error('Something went wrong with fetching movies!');
-
-        const data = await res.json();
-
-        // If there is no movie
-        if (data.Response === 'False') throw new Error('Movie not found!');
-
-        setMovies(data.Search);
-        setError('');
-      } catch (error) {
-        // Set error if error is different from the "AbortError"
-        if (error.name !== 'AbortError') setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // If there is no query or less then 3 letter to search movie, show temporary movie data
-    if (query.length < 3) {
-      setMovies(tempMovieData);
-      setError('');
-      return;
-    }
-
-    handleCloseMovie(); // Close the movie details window before searching another movie
-    fetchMovies();
-
-    // Clean up function - abort controller
-    return () => {
-      controller.abort();
-    };
-  }, [query]);
+  // Custom hook to fetch movies data
+  const { movies, isLoading, error } = useMovies(query);
 
   // Handle select movie to pass imdb id to "movie details component"
   const handleSelectMovie = (imdbID) => {
@@ -83,9 +33,9 @@ export default function App() {
   };
 
   // Handle close movie when user click on back button
-  const handleCloseMovie = () => {
+  function handleCloseMovie() {
     setSelectedIMDBId(null);
-  };
+  }
 
   // Handle watch movie list, when user click "add to list" button after rating in the movie detail
   const handleAddWatched = (movie) => {
